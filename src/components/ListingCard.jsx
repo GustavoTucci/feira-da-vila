@@ -24,6 +24,11 @@ export default function ListingCard({ listing, onTrade }) {
           <span className={`owner-avatar owner-avatar--${listing.color}`}>{listing.initials}</span>
           <span>na banca de <strong>{listing.owner}</strong></span>
         </div>
+        {listing.address && (
+          <p className="listing-location">
+            {listing.address.localidade}/{listing.address.uf} · {listing.address.bairro}
+          </p>
+        )}
         <div className="looking-for">
           <span>{isTraded && listing.tradePartnerItem ? "TROCOU POR" : "EM TROCA, PROCURA"}</span>
           <p>{isTraded && listing.tradePartnerItem ? listing.tradePartnerItem : listing.lookingFor}</p>

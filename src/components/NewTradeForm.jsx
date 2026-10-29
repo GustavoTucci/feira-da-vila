@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { categories } from "../data/listings.js";
+import { lookupCep } from "../services/cep.js";
 
 const emojisByCategory = {
   Música: "🎵",
@@ -29,10 +30,43 @@ export default function NewTradeForm({ availableItems, onSubmit, onCancel }) {
   const [category, setCategory] = useState("Casa");
   const [description, setDescription] = useState("");
   const [targetId, setTargetId] = useState("");
+  const [cep, setCep] = useState("");
+  const [address, setAddress] = useState(null);
+  const [cepStatus, setCepStatus] = useState("idle");
+  const [cepError, setCepError] = useState("");
+  const cepController = useRef(null);
+
+  useEffect(() => () => cepController.current?.abort(), []);
+
+  function handleCepChange(event) {
+    setCep(event.target.value.replace(/\D/g, "").slice(0, 8));
+    setAddress(null);
+    setCepError("");
+    setCepStatus("idle");
+  }
+
+  async function handleCepLookup() {
+    cepController.current?.abort();
+    const controller = new AbortController();
+    cepController.current = controller;
+    setCepStatus("loading");
+    setCepError("");
+
+    try {
+      const data = await lookupCep(cep, { signal: controller.signal });
+      setAddress(data);
+      setCepStatus("success");
+    } catch (error) {
+      if (error.name === "AbortError") return;
+      setAddress(null);
+      setCepError(error.message || "Não foi possível consultar o CEP.");
+      setCepStatus("error");
+    }
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (!targetId) return;
+    if (!targetId || !address) return;
 
     onSubmit({
       owner: owner.trim(),
@@ -40,6 +74,8 @@ export default function NewTradeForm({ availableItems, onSubmit, onCancel }) {
       category,
       description: description.trim(),
       targetId: Number(targetId),
+      cep,
+      address,
     });
   }
 
@@ -94,6 +130,33 @@ export default function NewTradeForm({ availableItems, onSubmit, onCancel }) {
                 ))}
               </select>
             </label>
+            <div className="form-field form-field--cep">
+              <span>CEP DA SUA BANCA</span>
+              <div className="cep-input-row">
+                <input
+                  inputMode="numeric"
+                  value={cep}
+                  onChange={handleCepChange}
+                  onBlur={() => {
+                    if (cep.replace(/\D/g, "").length === 8 && cepStatus === "idle") {
+                      handleCepLookup();
+                    }
+                  }}
+                  placeholder="00000-000"
+                  maxLength={8}
+                  aria-describedby="cep-feedback"
+                  required
+                />
+                <button type="button" onClick={handleCepLookup} disabled={cepStatus === "loading"}>
+                  {cepStatus === "loading" ? "..." : "Buscar"}
+                </button>
+              </div>
+              <small id="cep-feedback" className={`cep-feedback cep-feedback--${cepStatus}`} role={cepStatus === "error" ? "alert" : "status"}>
+                {cepStatus === "success" && `${address.logradouro}, ${address.bairro} — ${address.localidade}/${address.uf}`}
+                {cepStatus === "error" && cepError}
+                {cepStatus === "idle" && "O endereço será preenchido pelo ViaCEP."}
+              </small>
+            </div>
             <label className="form-field form-field--wide">
               <span>UM POUCO DA HISTÓRIA</span>
               <textarea
@@ -142,7 +205,7 @@ export default function NewTradeForm({ availableItems, onSubmit, onCancel }) {
               <button
                 className="form-submit"
                 type="submit"
-                disabled={!targetId || availableItems.length === 0}
+                disabled={!targetId || !address || availableItems.length === 0}
               >
                 Confirmar troca <span aria-hidden="true">↗</span>
               </button>
