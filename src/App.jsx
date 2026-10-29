@@ -1,13 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { Route, Routes } from "react-router-dom";
 import Header from "./components/Header.jsx";
 import ListingGrid from "./components/ListingGrid.jsx";
 import MarketToolbar from "./components/MarketToolbar.jsx";
 import NewTradeForm, { getNewListingDetails } from "./components/NewTradeForm.jsx";
 import ToastMessage from "./components/ToastMessage.jsx";
 import { listings as initialListings } from "./data/listings.js";
-import ConceptsPage from "./pages/ConceptsPage.jsx";
-import ApiPage from "./pages/ApiPage.jsx";
 
 function MarketIntro({ availableCount }) {
   return (
@@ -47,7 +44,7 @@ function MarketIntro({ availableCount }) {
   );
 }
 
-function MarketPage() {
+function App() {
   const [items, setItems] = useState(initialListings);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("Todas");
@@ -101,7 +98,7 @@ function MarketPage() {
     );
   }
 
-  function handleNewTrade({ owner, item, category: itemCategory, description, targetId, cep, address }) {
+  function handleNewTrade({ owner, item, category: itemCategory, description, targetId }) {
     const target = items.find((listing) => listing.id === targetId);
     if (!target || target.status !== "available") {
       setToast("Esse anúncio não está mais disponível. Escolha outro objeto.");
@@ -123,8 +120,6 @@ function MarketPage() {
       color,
       status: "traded",
       tradePartnerId: target.id,
-      cep,
-      address,
     };
 
     setItems((currentItems) => [
@@ -213,17 +208,6 @@ function MarketPage() {
       </footer>
       <ToastMessage message={toast} onDismiss={() => setToast("")} />
     </div>
-  );
-}
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<MarketPage />} />
-      <Route path="/conceitos" element={<ConceptsPage />} />
-      <Route path="/inspiracoes" element={<ApiPage />} />
-      <Route path="*" element={<MarketPage />} />
-    </Routes>
   );
 }
 
