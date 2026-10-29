@@ -1,4 +1,4 @@
-# Feira da Vila — conceitos da Aula 08
+# Feira da Vila — conceitos da Aula 09
 
 Este documento relaciona as ideias estudadas em aula às decisões visíveis no projeto.
 
@@ -53,3 +53,21 @@ O ganho demonstrado é evitar sincronizar manualmente esses elementos em diferen
 4. `App` cria o novo anúncio e associa os identificadores dos dois objetos.
 5. Ambos passam para o status `traded`; cartões, totais e avisos são atualizados.
 6. Se a troca for desfeita por um dos cartões, os dois objetos voltam a ficar disponíveis e a associação é removida.
+
+## React Router
+
+`main.jsx` envolve a aplicação com `BrowserRouter`. O componente `App` define três rotas:
+
+- `/`: feira interativa;
+- `/conceitos`: explicação dos conteúdos aplicados;
+- `/inspiracoes`: dados vindos de uma API externa.
+
+`NavLink` mantém a navegação no cabeçalho sem recarregar a página, enquanto `Link` oferece retornos internos nas páginas de conteúdo.
+
+## Formulário e useEffect
+
+`NewTradeForm` usa campos controlados por `useState`, validação nativa do navegador e `onSubmit`. Em `App`, outro `useEffect` controla a duração do aviso temporário.
+
+## Consumo de API
+
+`ApiPage` consulta a ViaCEP com `fetch` quando o usuário envia um CEP. O formulário de nova troca também consulta o CEP ao clicar em “Buscar” e salva o endereço retornado junto do novo anúncio. A interface possui estados explícitos de carregamento, sucesso e erro, e valida o CEP antes de exibir o endereço.
