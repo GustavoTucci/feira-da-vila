@@ -2,7 +2,7 @@
 
 Uma feira fictícia de trocas entre personagens da vizinhança. Cada objeto chega com uma história, um dono e uma ideia do que gostaria de encontrar em troca. Explore as bancas, procure um anúncio e experimente concluir uma troca.
 
-Este projeto foi desenvolvido como atividade da Aula 08 para aplicar os seis conceitos de React estudados em sala.
+Este projeto foi desenvolvido como atividade da Aula 09 para aplicar os conceitos de React estudados em sala.
 
 ## Funcionalidades
 
@@ -16,8 +16,21 @@ Este projeto foi desenvolvido como atividade da Aula 08 para aplicar os seis con
 - Confirmação acessível para cada troca.
 - Mensagem de estado vazio quando uma busca ou filtro não encontra anúncios.
 - Layout responsivo com ilustrações, cores e identidade visual próprias.
+- Navegação entre páginas com React Router (`/`, `/conceitos` e `/inspiracoes`).
+- Consulta de CEP pela API pública ViaCEP com estados de carregamento e erro.
 
-Os anúncios iniciais são fictícios e ficam no código. Os anúncios cadastrados e mudanças de status acontecem durante o uso da aplicação e voltam ao estado inicial ao recarregar a página.
+Os anúncios iniciais são fictícios e ficam no código. Os anúncios cadastrados e mudanças de status acontecem durante o uso da aplicação e voltam ao estado inicial ao recarregar a página. A consulta de CEP depende de conexão com a internet para acessar a ViaCEP.
+
+## Conceitos da atividade
+
+Além da feira interativa, as rotas **Conceitos** e **API** apresentam de forma visível onde cada conteúdo foi aplicado:
+
+- **State e useState:** anúncios, filtros, formulário, toast e estados da página de API.
+- **Formulários:** campos controlados, validação nativa e `onSubmit` para criar uma troca.
+- **useEffect:** temporizador do aviso e carregamento assíncrono da API com cancelamento.
+- **Consumo de APIs:** o ViaCEP é consultado com `fetch` para preencher endereços e localizar as bancas.
+- **React Router:** `BrowserRouter`, `Routes`, `Route`, `NavLink` e `Link` organizam as páginas.
+- JSX, componentes, props, listas com `key`, renderização condicional e Virtual DOM.
 
 ## Os seis conceitos da Aula 08
 
